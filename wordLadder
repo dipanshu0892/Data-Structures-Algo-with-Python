@@ -1,0 +1,35 @@
+from collections import defaultdict, deque  
+  
+def findLadders(beginWord, endWord, wordList):  
+    wordSet = set(wordList)  
+    if endWord not in wordSet:  
+        return []  
+  
+    # Step 1: BFS to build graph of shortest paths  
+    layer = {}  
+    layer[beginWord] = [[beginWord]]  
+  
+    while layer:  
+        new_layer = defaultdict(list)  
+        for word in layer:  
+            if word == endWord:  
+                return layer[word]  
+            for i in range(len(word)):  
+                for c in 'abcdefghijklmnopqrstuvwxyz':  
+                    new_word = word[:i] + c + word[i+1:]  
+                    if new_word in wordSet:  
+                        new_layer[new_word] += [path + [new_word] for path in layer[word]]  
+  
+        wordSet -= set(new_layer.keys())  
+        layer = new_layer  
+  
+    return []  
+  
+# Example usage  
+begin = "hit"  
+end = "cog"  
+words = ["hot","dot","dog","lot","log","cog"]  
+  
+result = findLadders(begin, end, words)  
+for path in result:  
+    print(path)  
